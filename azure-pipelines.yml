@@ -1,0 +1,27 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'Instalar dependências'
+
+- script: |
+    npm run test:junit
+  displayName: 'Executar testes'
+
+- task: PublishTestResults@2
+  displayName: 'Report'
+  condition: always()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/*.xml'
+    failTaskOnFailedTests: true
